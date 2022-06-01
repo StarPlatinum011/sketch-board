@@ -1,57 +1,55 @@
 const container = document.getElementById("container");
-let rows = document.getElementsByClassName("gridRow");
-let cells = document.getElementsByClassName("cell");
-let messagePromt = document.getElementById('promptM');
 let gridBtn = document.getElementById('gridBtn');
-
+let num;
+makeRows(36,36);
 //Button action listener for the grid generation
 gridBtn.addEventListener('click',()=>{
-    let num = Number(prompt("Please enter a grid number:", 16));
+    num = Number(prompt("Please enter a grid number:", 36));
     if(num==null||num==""){
-        messagePromt.textContent = "Please enter something.";
+        alert("Please enter something.");
     }
-    else if(num>100){
-        messagePromt.textContent = "Grids must be less than 100.";
+    else if(num>50){
+        alert("Number must be less than 50.");
     }
     else{
-        //reset();
-        defaultGrid(num,num);
+        reset();
+        makeRows(num,num);
     }
 });
 
+//Generation of grid
+function makeRows(rows=36, cols=36) {
+    container.style.setProperty('--grid-rows', rows);
+    container.style.setProperty('--grid-cols', cols);
+    for (c = 0; c < (rows * cols); c++) {
+      let cell = document.createElement("div");
+      cell.addEventListener('mouseover', function(e){
+          e.target.style.backgroundColor='black';
+      });
+      container.appendChild(cell).className = "grid-item";
+    };
+  };
 
-// Creates a default grid sized 16x16
-function defaultGrid(row, col) {
-    makeRows(row);
-    makeColumns(col);
-}
+//Clear button 
+let clearBtn = document.getElementById('clearGrid');
+clearBtn.addEventListener('click', ()=>{
+    reset();
+    makeRows(num,num)
+})
+//resetting the grid
+function reset() {
+    document
+    .querySelectorAll(".grid-item")
+    .forEach((e) => e.parentNode.removeChild(e));
+  }
 
+//rainbow button
+let rainbowBtn = document.getElementById('rainbowBtn');
+rainbowBtn.addEventListener('click',()=>{
+    colorChangeOnHover();
+})
 
-// Takes rows input and make a grid
-function makeRows(rowNum) {
-    // Creates rows
-    for(let r=0; r<rowNum; r++){
-        let newRow = document.createElement("div");
-        container.appendChild(newRow).className="gridRow";
-    }
-};
-
-// Creates columns
-function makeColumns(cellNum) {
-    for(let c=0; c<rows.length;c++){
-        for(let j = 0; j<cellNum;j++){
-            let newCol = document.createElement("div");
-            newCol.addEventListener('mouseover', function(event){
-                event.target.style.backgroundColor = 'black';
-            })
-            rows[j].appendChild(newCol).className= "cell";
-        }
-    }
-    //colorChangeOnHover();
-};
-
-
-//Generate the random color
+  //Generate the random color on grid
 function randColor(){
     let colorCode = '0123456789ABCDEF';
     let color = '#'
@@ -62,7 +60,7 @@ function randColor(){
 }
 
 function colorChangeOnHover(){
-    let items = document.querySelectorAll('.cell');
+    let items = document.querySelectorAll('.grid-item');
     items.forEach(item=>{
         item.addEventListener('mouseover',()=>{
             item.style.backgroundColor = `${randColor()}`;
@@ -70,14 +68,16 @@ function colorChangeOnHover(){
     });
 }
 
-function reset() {
-    // document
-    //   .querySelectorAll(".cell")
-    //   .forEach((e) => e.parentNode.removeChild(e));
+let blackPen = document.getElementById('black');
+blackPen.addEventListener('click',()=>{
+    blackOnHover();
+});
 
-      let cells = document.querySelector('.cell');
-      while (cells.firstChild) {
-        cells.removeChild(cells.firstChild)
-    }
-
-  }
+function blackOnHover(){
+    let items = document.querySelectorAll('.grid-item');
+    items.forEach(item=>{
+        item.addEventListener('mouseover',()=>{
+            item.style.backgroundColor = 'black';
+        });
+    });
+}
